@@ -12,7 +12,7 @@ r = 10  # Number of successes
 p = 0.5  # Probability of success
 
 # Exponential Distribution Parameter
-lambda_exp = 0.1  # Rate parameter
+lambda_exp = 0.3  # Rate parameter
 
 # Lognormal Distribution Parameters
 mu = 0  # Mean

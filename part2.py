@@ -8,12 +8,13 @@ claim_rate_lambda = 10
 premium_rate = 10000
 sampled_claim_rate_lambda = 15
 # Paramètres pour les distributions de coût des sinistres
-lambda_exp = 0.1  # Distribution exponentielle
+lambda_exp = 0.3  # Distribution exponentielle
 mu = 0          # Distribution log-normale (moyenne)
 sigma = 1       # Distribution log-normale (écart-type)
 
 def simulate_ruin_probability(cost_distribution):
-    ruins = []
+    total_weight = 0
+    ruin_count = 0
 
     for _ in range(n_simulations):
         n_claims_sampled = np.random.poisson(lam=sampled_claim_rate_lambda)
@@ -31,9 +32,10 @@ def simulate_ruin_probability(cost_distribution):
         ruin_occurred = np.any(reserve < 0)
 
         if ruin_occurred:
-            ruins.append(weight)
+            total_weight += weight
+            ruin_count += 1
 
-    return np.mean(ruins)
+    return total_weight / n_simulations if ruin_count > 0 else 0
 
 def simulate_ruin_quantiles(cost_distribution):
     deficits_at_ruin = []
@@ -52,6 +54,7 @@ def simulate_ruin_quantiles(cost_distribution):
 
         if np.any(reserve < 0):
             deficits_at_ruin.append(-reserve[reserve < 0][0])
+
 
     quantile_95 = np.percentile(deficits_at_ruin, 95) if deficits_at_ruin else None
     quantile_99 = np.percentile(deficits_at_ruin, 99) if deficits_at_ruin else None
